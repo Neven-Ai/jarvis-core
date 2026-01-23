@@ -1,0 +1,24 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "Connect to Lutron Processor (LEAP)",
+        "description": "Enter the connection details and paths to your certificates.",
+        "data": {
+          "host": "Host (IP or mDNS)",
+          "port": "Port (Default 8081)",
+          "cert_file": "Certificate File Path (.pem)",
+          "key_file": "Private Key File Path (.pem)",
+          "ca_file": "CA Certificate File Path (.pem)"
+        }
+      }
+    },
+    "error": {
+      "cannot_connect": "Failed to connect",
+      "unknown": "Unexpected error"
+    },
+    "abort": {
+      "already_configured": "Device is already configured"
+    }
+  }
+}

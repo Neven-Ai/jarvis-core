@@ -59,6 +59,8 @@ from .project import KNXProject
 from .repairs import data_secure_group_key_issue_dispatcher
 from .storage.config_store import KNXConfigStore
 from .telegrams import Telegrams
+from .monitoring import KNXDeviceMonitor
+
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -105,6 +107,7 @@ class KNXModule:
         self.interface_device = KNXInterfaceDevice(
             hass=hass, entry=entry, xknx=self.xknx
         )
+        self.monitor = KNXDeviceMonitor(self)
 
         self._address_filter_transcoder: dict[AddressFilter, type[DPTBase]] = {}
         self.group_address_transcoder: dict[DeviceGroupAddress, type[DPTBase]] = {}
@@ -124,9 +127,11 @@ class KNXModule:
         await self.config_store.load_data()
         await self.telegrams.load_history()
         await self.xknx.start()
+        await self.monitor.start()
 
     async def stop(self, event: Event | None = None) -> None:
         """Stop XKNX object. Disconnect from tunneling or Routing device."""
+        await self.monitor.stop()
         await self.xknx.stop()
         await self.telegrams.save_history()
 

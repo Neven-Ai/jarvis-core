@@ -143,8 +143,8 @@ async def test_turn_on_off_raises_error(
     [
         ("normal", "pyvesync.devices.vesyncfan.VeSyncTowerFan.set_normal_mode"),
         (
-            "advanced_sleep",
-            "pyvesync.devices.vesyncfan.VeSyncTowerFan.set_advanced_sleep_mode",
+            "sleep",
+            "pyvesync.devices.vesyncfan.VeSyncTowerFan.set_sleep_mode",
         ),
         ("turbo", "pyvesync.devices.vesyncfan.VeSyncTowerFan.set_turbo_mode"),
         ("auto", "pyvesync.devices.vesyncfan.VeSyncTowerFan.set_auto_mode"),
@@ -158,7 +158,7 @@ async def test_set_preset_mode(
     preset_mode: str,
     patch_target: str,
 ) -> None:
-    """Test handling of value in set_preset_mode method. Does this via turn on as it increases test coverage."""
+    """Test set_preset_mode method via turn on for test coverage."""
 
     # If VeSyncTowerFan.mode fails (returns False), then HomeAssistantError is raised
     with (

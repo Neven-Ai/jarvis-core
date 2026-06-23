@@ -1,8 +1,6 @@
 """Climate platform for Airobot thermostat."""
 
-from __future__ import annotations
-
-from typing import Any
+from typing import Any, override
 
 from pyairobotrest.const import (
     MODE_AWAY,
@@ -29,6 +27,7 @@ from homeassistant.helpers.entity_platform import AddConfigEntryEntitiesCallback
 
 from . import AirobotConfigEntry
 from .const import DOMAIN
+from .coordinator import AirobotDataUpdateCoordinator
 from .entity import AirobotEntity
 
 PARALLEL_UPDATES = 1
@@ -63,7 +62,7 @@ class AirobotClimate(AirobotEntity, ClimateEntity):
     _attr_min_temp = SETPOINT_TEMP_MIN
     _attr_max_temp = SETPOINT_TEMP_MAX
 
-    def __init__(self, coordinator) -> None:
+    def __init__(self, coordinator: AirobotDataUpdateCoordinator) -> None:
         """Initialize the climate entity."""
         super().__init__(coordinator)
         self._attr_unique_id = coordinator.data.status.device_id
@@ -79,6 +78,7 @@ class AirobotClimate(AirobotEntity, ClimateEntity):
         return self.coordinator.data.settings
 
     @property
+    @override
     def current_temperature(self) -> float | None:
         """Return the current temperature.
 
@@ -89,11 +89,13 @@ class AirobotClimate(AirobotEntity, ClimateEntity):
         return self._status.temp_air
 
     @property
+    @override
     def current_humidity(self) -> float | None:
         """Return the current humidity."""
         return self._status.hum_air
 
     @property
+    @override
     def target_temperature(self) -> float | None:
         """Return the target temperature."""
         if self._settings.is_home_mode:
@@ -101,6 +103,7 @@ class AirobotClimate(AirobotEntity, ClimateEntity):
         return self._settings.setpoint_temp_away
 
     @property
+    @override
     def hvac_mode(self) -> HVACMode:
         """Return current HVAC mode."""
         if self._status.is_heating:
@@ -108,6 +111,7 @@ class AirobotClimate(AirobotEntity, ClimateEntity):
         return HVACMode.OFF
 
     @property
+    @override
     def hvac_action(self) -> HVACAction:
         """Return current HVAC action."""
         if self._status.is_heating:
@@ -115,6 +119,7 @@ class AirobotClimate(AirobotEntity, ClimateEntity):
         return HVACAction.IDLE
 
     @property
+    @override
     def preset_mode(self) -> str | None:
         """Return current preset mode."""
         if self._settings.setting_flags.boost_enabled:
@@ -123,6 +128,7 @@ class AirobotClimate(AirobotEntity, ClimateEntity):
             return PRESET_HOME
         return PRESET_AWAY
 
+    @override
     async def async_set_temperature(self, **kwargs: Any) -> None:
         """Set new target temperature."""
         temperature = kwargs[ATTR_TEMPERATURE]
@@ -141,6 +147,7 @@ class AirobotClimate(AirobotEntity, ClimateEntity):
 
         await self.coordinator.async_request_refresh()
 
+    @override
     async def async_set_hvac_mode(self, hvac_mode: HVACMode) -> None:
         """Set HVAC mode.
 
@@ -148,6 +155,7 @@ class AirobotClimate(AirobotEntity, ClimateEntity):
         that only supported modes are passed, so this method is a no-op.
         """
 
+    @override
     async def async_set_preset_mode(self, preset_mode: str) -> None:
         """Set new preset mode."""
         try:

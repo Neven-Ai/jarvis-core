@@ -1,7 +1,5 @@
 """Helpers to install PyPi packages."""
 
-from __future__ import annotations
-
 import asyncio
 from functools import cache
 from importlib.metadata import PackageNotFoundError, version
@@ -11,13 +9,22 @@ from pathlib import Path
 import site
 from subprocess import PIPE, Popen
 import sys
+from typing import TypedDict, cast
 from urllib.parse import urlparse
 
 from packaging.requirements import InvalidRequirement, Requirement
 
+from .json import JSON_DECODE_EXCEPTIONS, json_loads_array
 from .system_info import is_official_image
 
 _LOGGER = logging.getLogger(__name__)
+
+
+class InstalledPackage(TypedDict):
+    """Represent an installed package."""
+
+    name: str
+    version: str
 
 
 def is_virtual_env() -> bool:
@@ -203,3 +210,26 @@ async def async_get_user_site(deps_dir: str) -> str:
     )
     stdout, _ = await process.communicate()
     return stdout.decode().strip()
+
+
+async def async_get_installed_packages() -> list[InstalledPackage]:
+    """Return a list of installed packages and versions.
+
+    Returns a list of InstalledPackage dicts with 'name' and 'version' keys.
+    """
+    args = [sys.executable, "-m", "uv", "pip", "list", "--format", "json"]
+    process = await asyncio.create_subprocess_exec(
+        *args,
+        stdin=asyncio.subprocess.PIPE,
+        stdout=asyncio.subprocess.PIPE,
+        stderr=asyncio.subprocess.DEVNULL,
+        close_fds=False,  # required for posix_spawn
+    )
+    stdout, _ = await process.communicate()
+    if process.returncode != 0:
+        return []
+
+    try:
+        return cast(list[InstalledPackage], json_loads_array(stdout.decode()))
+    except (*JSON_DECODE_EXCEPTIONS, ValueError):
+        return []

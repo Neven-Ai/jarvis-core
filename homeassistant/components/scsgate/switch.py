@@ -1,9 +1,7 @@
 """Support for SCSGate switches."""
 
-from __future__ import annotations
-
 import logging
-from typing import Any
+from typing import Any, override
 
 from scsgate.messages import ScenarioTriggeredMessage, StateMessage
 from scsgate.tasks import ToggleStatusTask
@@ -100,9 +98,9 @@ class SCSGateSwitch(SwitchEntity):
 
     def __init__(self, scs_id, name, logger, scsgate):
         """Initialize the switch."""
-        self._name = name
+        self._attr_name = name
         self._scs_id = scs_id
-        self._toggled = False
+        self._attr_is_on = False
         self._logger = logger
         self._scsgate = scsgate
 
@@ -111,35 +109,27 @@ class SCSGateSwitch(SwitchEntity):
         """Return the SCS ID."""
         return self._scs_id
 
-    @property
-    def name(self):
-        """Return the name of the device if any."""
-        return self._name
-
-    @property
-    def is_on(self):
-        """Return true if switch is on."""
-        return self._toggled
-
+    @override
     def turn_on(self, **kwargs: Any) -> None:
         """Turn the device on."""
 
         self._scsgate.append_task(ToggleStatusTask(target=self._scs_id, toggled=True))
 
-        self._toggled = True
+        self._attr_is_on = True
         self.schedule_update_ha_state()
 
+    @override
     def turn_off(self, **kwargs: Any) -> None:
         """Turn the device off."""
 
         self._scsgate.append_task(ToggleStatusTask(target=self._scs_id, toggled=False))
 
-        self._toggled = False
+        self._attr_is_on = False
         self.schedule_update_ha_state()
 
     def process_event(self, message):
         """Handle a SCSGate message related with this switch."""
-        if self._toggled == message.toggled:
+        if self._attr_is_on == message.toggled:
             self._logger.info(
                 "Switch %s, ignoring message %s because state already active",
                 self._scs_id,
@@ -148,11 +138,11 @@ class SCSGateSwitch(SwitchEntity):
             # Nothing changed, ignoring
             return
 
-        self._toggled = message.toggled
+        self._attr_is_on = message.toggled
         self.schedule_update_ha_state()
 
         command = "off"
-        if self._toggled:
+        if self._attr_is_on:
             command = "on"
 
         self.hass.bus.fire(

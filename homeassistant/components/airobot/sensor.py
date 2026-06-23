@@ -1,10 +1,9 @@
 """Sensor platform for Airobot thermostat."""
 
-from __future__ import annotations
-
 from collections.abc import Callable
 from dataclasses import dataclass
 from datetime import datetime, timedelta
+from typing import override
 
 from pyairobotrest.models import ThermostatStatus
 
@@ -28,6 +27,7 @@ from homeassistant.util.dt import utcnow
 from homeassistant.util.variance import ignore_variance
 
 from . import AirobotConfigEntry
+from .coordinator import AirobotDataUpdateCoordinator
 from .entity import AirobotEntity
 
 PARALLEL_UPDATES = 0
@@ -53,6 +53,7 @@ SENSOR_TYPES: tuple[AirobotSensorEntityDescription, ...] = (
         device_class=SensorDeviceClass.TEMPERATURE,
         native_unit_of_measurement=UnitOfTemperature.CELSIUS,
         state_class=SensorStateClass.MEASUREMENT,
+        suggested_display_precision=1,
         value_fn=lambda status: status.temp_air,
     ),
     AirobotSensorEntityDescription(
@@ -136,7 +137,7 @@ class AirobotSensor(AirobotEntity, SensorEntity):
 
     def __init__(
         self,
-        coordinator,
+        coordinator: AirobotDataUpdateCoordinator,
         description: AirobotSensorEntityDescription,
     ) -> None:
         """Initialize the sensor."""
@@ -145,6 +146,7 @@ class AirobotSensor(AirobotEntity, SensorEntity):
         self._attr_unique_id = f"{coordinator.data.status.device_id}_{description.key}"
 
     @property
+    @override
     def native_value(self) -> StateType | datetime:
         """Return the state of the sensor."""
         return self.entity_description.value_fn(self.coordinator.data.status)

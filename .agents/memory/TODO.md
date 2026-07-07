@@ -78,7 +78,7 @@ Seguire le fasi in ordine (0a → 0b → 0c → 1 → …). Ogni task ha criteri
 
 ## Bassa Priorità — Repo / tooling
 
-- [ ] Valutare allineamento `script/hassfest/codeowners.py` vs `CODEOWNERS`
+- [x] Allineato `script/hassfest/codeowners.py` a `CODEOWNERS` (commit `592cd6e8ebd`, 2026-07-07)
 - [ ] Automatizzare check `www/` aggiornato vs sorgenti frontend in CI
 - [ ] Valutare hook locali per sync memoria
 

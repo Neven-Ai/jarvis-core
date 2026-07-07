@@ -35,6 +35,8 @@ cd homeassistant/components/jarvis_monitor/frontend
 npm install && npm run build
 ```
 
+Richiede **Node.js LTS** nel devcontainer (feature `node` in `.devcontainer/devcontainer.json`). Dopo la modifica: **Dev Containers: Rebuild Container**.
+
 ## Database
 
 | DB | Percorso | Scopo | Retention |

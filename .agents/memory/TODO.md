@@ -3,14 +3,13 @@
 # TODO — jarvis
 
 > **Ultimo aggiornamento**: 2026-07-07
-> **Branch**: `dev`
+> **Branch**: `neven/jarvis`
 
 ---
 
 ## Alta Priorità
 
-- [ ] Sbloccare l'ambiente di sviluppo per i commit: `script/setup` fallisce per assenza di `python3.14-venv` e il hook pre-commit non trova `prek`
-- [ ] Decidere se consolidare in un commit dedicato le modifiche a `.agents/`, `CODEOWNERS` e `script/hassfest/codeowners.py`
+- [ ] Valutare se allineare anche `script/hassfest/codeowners.py` al riferimento rimosso da `CODEOWNERS`
 
 ---
 
@@ -28,6 +27,11 @@
 
 ## Completati
 
+- [x] Aggiunta e verificata la nuova chiave SSH dedicata per il push su `jarvis-core`
+- [x] Eseguito il push del branch `neven/collaborative-memory-cleanup` verso `origin` via SSH dedicato
+- [x] Creata la chiave SSH dedicata `~/.ssh/id_ed25519_github_jarvis_nevendev` senza passphrase
+- [x] Sbloccato il commit locale creando una `.venv` minima con `pip` e `prek`, spostando il lavoro su un branch dedicato
+- [x] Creato il commit `8605cf072fb` su `neven/collaborative-memory-cleanup` per `.agents/`, `CODEOWNERS` e la rimozione di `/.agent/skills`
 - [x] Creato il primo `SESSION_SUMMARY.md` come checkpoint iniziale della memoria condivisa
 - [x] Eseguita la validazione della memoria condivisa con `python3 .agents/scripts/validate_memory.py` (esito OK; manca solo un checkpoint iniziale)
 - [x] Compilato `PROJECT_STATE.md` con contesto reale del repository: stack, avvio, test, branch e documentazione chiave

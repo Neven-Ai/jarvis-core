@@ -15,7 +15,7 @@ Pulire il repository dai residui della precedente installazione della skill e ad
 | File | Cambiamento |
 |------|-------------|
 | `.agents/memory/PROJECT_STATE.md` | Sostituito il template con descrizione reale del repo, stack, avvio, test e documentazione chiave |
-| `.agents/memory/TODO.md` | Ripuliti i placeholder, corretto il branch a `dev`, aggiunti completati e backlog iniziale concreto |
+| `.agents/memory/TODO.md` | Ripuliti i placeholder, aggiornato il branch di lavoro e aggiunti completati e backlog iniziale concreto |
 | `.agents/memory/BUGS.md` | Esplicitato che non risultano bug aperti legati alla memoria condivisa |
 | `.agents/memory/WORKLOG.md` | Documentate tutte le operazioni svolte nella sessione |
 | `.agents/sessions/SESSION_SUMMARY.md` | Creato il primo checkpoint della memoria condivisa |
@@ -31,19 +31,19 @@ Pulire il repository dai residui della precedente installazione della skill e ad
 
 ### Git
 
-- Branch: `dev`
-- Ultimo commit: `87a13d3d5d4 Merge branch 'home-assistant:dev' into dev`
+- Branch: `neven/jarvis`
+- Ultimo commit: `8605cf072fb Add collaborative project memory and drop legacy .agent config`
 - Working directory: sporca; oltre al lavoro su `.agents/`, `CODEOWNERS` e `script/hassfest/codeowners.py`, risultano modifiche pregresse in `AGENTS.md`, `.github/copilot-instructions.md` e `docs/Lutron/LEAP Quick Start Guide/LEAP Quick Start Guide - Part 1.pdf`
 
 ## Work in Progress
 
-1. Valutare se consolidare in un commit dedicato le modifiche alla memoria condivisa e alla pulizia dei riferimenti legacy — 0% — in attesa di decisione esplicita dell'utente
+1. Valutare se allineare anche `script/hassfest/codeowners.py` al riferimento rimosso da `CODEOWNERS` — 0% — follow-up lasciato fuori dal commit principale
 
 ## Prossimi Step
 
 ### Alta Priorità
 
-1. Decidere se creare un commit dedicato per `.agents/`, `CODEOWNERS` e `script/hassfest/codeowners.py`
+1. Valutare se committare il follow-up su `script/hassfest/codeowners.py`
 2. Usare il nuovo `SESSION_SUMMARY.md` come base per i prossimi handover o checkpoint
 
 ## Riferimenti
@@ -51,6 +51,6 @@ Pulire il repository dai residui della precedente installazione della skill e ad
 - WORKLOG: voci recenti in `.agents/memory/WORKLOG.md`
 
 ---
-**Ultimo Aggiornamento**: 2026-07-07 08:41
+**Ultimo Aggiornamento**: 2026-07-07 09:16
 **Progetto**: jarvis
-**Branch**: `dev`
+**Branch**: `neven/jarvis`

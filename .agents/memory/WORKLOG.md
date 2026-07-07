@@ -5,6 +5,51 @@
 
 ---
 
+## [2026-07-07] Branch rinominato in `neven/jarvis` (agente: GPT-5.4)
+**Richieste**: rinominare `neven/collaborative-memory-cleanup` in `neven/jarvis`
+**Modifiche**:
+- branch locale rinominato in `neven/jarvis`
+- branch remoto `neven/jarvis` pubblicato via SSH dedicato
+- branch remoto `neven/collaborative-memory-cleanup` eliminato
+- `.agents/memory/TODO.md` e `.agents/sessions/SESSION_SUMMARY.md` — riallineati al nuovo identificativo del branch
+**Esito**: completato
+
+## [2026-07-07] Push riuscito con chiave SSH dedicata (agente: GPT-5.4)
+**Richieste**: usare la nuova chiave `nevendev` per sbloccare il push
+**Modifiche**:
+- test `ssh -i ~/.ssh/id_ed25519_github_jarvis_nevendev -T git@github.com` — autenticazione riuscita su `Neven-Ai/jarvis-core`
+- `git push -u git@github.com:Neven-Ai/jarvis-core.git HEAD` — eseguito con `GIT_SSH_COMMAND` puntato alla chiave dedicata
+- `.agents/memory/TODO.md` — segnati come completati lo sblocco della chiave e il push del branch
+**Esito**: completato; branch remoto pubblicato con tracking attivo
+
+## [2026-07-07] Creata chiave SSH dedicata per jarvis-core (agente: GPT-5.4)
+**Richieste**: creare una chiave SSH dedicata chiamata `nevendev`
+**Modifiche**:
+- `~/.ssh/id_ed25519_github_jarvis_nevendev` — creata nuova chiave SSH ed25519 senza passphrase
+- `~/.ssh/id_ed25519_github_jarvis_nevendev.pub` — generata public key da registrare su GitHub
+- test `ssh -i ... -T git@github.com` — fallito come atteso finche la chiave non viene aggiunta all'account GitHub
+- `.agents/memory/TODO.md` — registrato il prossimo step per lo sblocco del push
+**Esito**: completato; la chiave locale esiste, ma va ancora aggiunta a GitHub prima di poter usare il push
+
+## [2026-07-07] Push bloccato da chiave SSH errata (agente: GPT-5.4)
+**Richieste**: verificare e sbloccare il push dopo il commit riuscito
+**Modifiche**:
+- `git push -u git@github.com:Neven-Ai/jarvis-core.git HEAD` — fallito con `Permission to Neven-Ai/jarvis-core.git denied to deploy key`
+- `~/.ssh/config` — verificata la chiave `id_ed25519_github_nevendev`
+- `ssh -T git@github.com` e test isolati con `-i` — confermato che la chiave valida autentica come accesso deploy key a `Neven-Ai/cashflow`, non come identita con permessi su `jarvis-core`
+- `.agents/memory/TODO.md` — registrato il follow-up sull'autenticazione GitHub
+**Esito**: commit locale sbloccato, push ancora bloccato finche non viene associata una chiave o credenziale con accesso a `jarvis-core`
+
+## [2026-07-07] Commit sbloccato su branch dedicato (agente: GPT-5.4)
+**Richieste**: sbloccare git e completare il commit della memoria condivisa
+**Modifiche**:
+- `.git/hooks/pre-commit` — riallineato localmente il path di `prek` alla `.venv` del progetto
+- `.venv/` — bootstrap locale di `pip` e installazione di `prek` per far partire i hook
+- `git checkout -b neven/collaborative-memory-cleanup` — creato branch dedicato per evitare il blocco su `dev`
+- `git commit` — creato con successo `8605cf072fb Add collaborative project memory and drop legacy .agent config`
+- `.agents/memory/TODO.md` — registrato il commit riuscito e il follow-up rimasto su `script/hassfest/codeowners.py`
+**Esito**: completato; il commit locale ora funziona, resta da verificare o eseguire il push
+
 ## [2026-07-07] Verifica possibilita di commit e push (agente: GPT-5.4)
 **Richieste**: verificare se la sessione puo eseguire commit e push
 **Modifiche**:

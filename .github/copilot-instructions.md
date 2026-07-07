@@ -55,3 +55,16 @@ This repository contains the core of Home Assistant, a Python 3 based home autom
 - Do not add comments that just restate the code on the following line(s) (e.g. `# Check if initialized` above `if self.initialized:`). Comments should only explain why (non-obvious constraints, surprising behavior, or workarounds), never what. Never add comments that justify a change by referencing what the code looked like before.
 - Do not add section or divider comments (e.g. `# --- XYZ Triggers ---`) inside or outside of functions, since those can easily become stale and be misleading.
 - When catching exceptions, try-clauses should be as small as possible, i.e. avoid wrapping large blocks of code in a try-clause, and avoid catching exceptions from functions that are not expected to raise them.
+
+## Comportamento autonomo (OBBLIGATORIO)
+
+**Non attendere che l'utente chieda sync, lettura memoria o aggiornamento WORKLOG.**
+
+| When | Azione automatica |
+|---------|-------------------|
+| **Primo turno** (prima di rispondere) | Leggi `.agents/memory/ACTIVE_WORK.md`, `PROJECT_STATE.md`, `WORKLOG.md` (3 voci), `BUGS.md`, `TODO.md`. Per lavoro su **monitoring**: leggi anche `.agents/memory/MONITORING_PLAN.md` e `DECISIONS.md`. Riassumi in 2–3 frasi. |
+| **Dopo ogni operazione completata** | Aggiorna `WORKLOG.md`, `TODO.md`; `BUGS.md` / `DECISIONS.md` se serve; `PROJECT_STATE.md` solo su cambi strutturali; rimuovi claim se finito. **Stesso turno, senza chiedere.** |
+| **Task > ~30 min** | Registra claim in `ACTIVE_WORK.md`. |
+| **Fine sessione** (su richiesta) | CHECKPOINT → `.agents/sessions/SESSION_SUMMARY.md` |
+
+Protocollo: `.agents/skills/collaborative-project-memory/SKILL.md`

@@ -6,16 +6,20 @@
 
 ## Cos'è
 
-Questo repository contiene `homeassistant`, il core di Home Assistant: una piattaforma open source di home automation orientata a controllo locale e privacy. Il codice principale vive nel package `homeassistant/`, con test in `tests/`, script di sviluppo in `script/` e una configurazione locale di esempio in `config/`.
+Questo repository contiene `homeassistant`, il core di Home Assistant: fork orientato a **monitoring evoluto multi-bus** (KNX, Lutron, DALI) per impianti domotici. Il codice principale vive in `homeassistant/`, test in `tests/`, script in `script/`, config locale in `config/`.
+
+**Piano di sviluppo monitoring**: `.agents/memory/MONITORING_PLAN.md` (fonte di verità per implementazione).
 
 ## Stack e struttura
 
 | Servizio | Tecnologia | Porta | Percorso |
 |----------|-----------|-------|----------|
 | Core applicativo | Python 3.14 / Home Assistant Core | variabile | `homeassistant/` |
+| Monitoring (da implementare) | `jarvis_monitor` integration | n/a | `homeassistant/components/jarvis_monitor/` |
+| Frontend monitoring | TypeScript/React (build npm) | servito da HA | `jarvis_monitor/frontend/` → `jarvis_monitor/www/` |
 | Test suite | `pytest` | n/a | `tests/` |
 | Tooling sviluppo | `uv`, `prek`, `pylint`, `ruff` | n/a | `script/`, `.pre-commit-config.yaml` |
-| Config locale di avvio | Home Assistant config dir | runtime locale | `config/` |
+| Config locale | Home Assistant config dir | runtime | `config/` |
 
 ## Come si avvia
 
@@ -24,37 +28,65 @@ script/setup
 uv run python -m homeassistant -c ./config
 ```
 
-Note:
-- In VS Code esiste anche il task `Run Home Assistant Core`, che avvia `python -m homeassistant -c ./config`.
-- Quando si entra in un nuovo environment o worktree, `script/setup` e il passaggio richiesto prima di lavorare o committare.
+Build frontend monitoring (quando implementato):
+
+```bash
+cd homeassistant/components/jarvis_monitor/frontend
+npm install && npm run build
+```
 
 ## Database
 
-Nessun database esterno dedicato rilevato da questa memoria di progetto. Per sviluppo locale il runtime usa la configurazione standard di Home Assistant sotto `config/`; eventuali dettagli specifici di integrazione o storage vanno documentati qui solo se diventano rilevanti per il lavoro corrente.
+| DB | Percorso | Scopo | Retention |
+|----|----------|-------|-----------|
+| **jarvis_monitor usage** (da implementare) | `config/.storage/jarvis_monitor/usage.db` | Utilizzo impianto, presenza, aggregati | Eventi 60gg; aggregati 2 anni |
+| **KNX telegrams** (esistente) | `config/.storage/knx/telegrams.db` | Traffico bus KNX grezzo | Configurabile in opzioni KNX |
+| **HA Recorder** (standard) | `config/home-assistant_v2.db` | Entity states HA | Configurazione recorder |
+
+Schema dettagliato: `MONITORING_PLAN.md` §5.
 
 ## Test
 
 ```bash
 uv run pytest
-uv run pytest tests/components/<integration_name>
+uv run pytest tests/components/jarvis_monitor   # quando esiste
+uv run pytest tests/components/knx
 uv run prek run --all-files
 ```
-
-Comandi utili aggiuntivi:
-- `python -m script.translations develop --all` per compilare le traduzioni inglesi durante test/lavoro su stringhe
-- task VS Code disponibili per `Pytest`, `Ruff`, `Prek`, coverage e update snapshot Syrupy
 
 ## Git
 
 - Branch principale: `dev`
+- Branch sviluppo monitoring: `neven/jarvis`
 - Vincolo: mai commit/push senza consenso esplicito
-- Working tree attualmente sporco: presenti modifiche utente pregresse oltre ai file in `.agents/`
+
+## Obiettivo prodotto (monitoring)
+
+Sistema di monitoring evoluto per impianti domotici, appoggiato a Home Assistant:
+
+| Area | Scelta |
+|------|--------|
+| Architettura | 3 livelli: collector → `jarvis_monitor` → UI (ADR-001) |
+| Store dati | SQLite unificato, eventi normalizzati (ADR-002) |
+| Collector | Ibrido: entity bridge default; nativo solo presenza e punti senza entità (ADR-004) |
+| Retention | Eventi grezzi 60 giorni; aggregati giornalieri 2 anni |
+| Soglie numeriche | Globali in config `jarvis_monitor` |
+| UI principale | Web custom in-repo (`frontend/` → `www/`) |
+| UI avanzata | Pannello HA opzionale (`advanced_panel_enabled`) |
+| Alerting | Telegram, email, WhatsApp (adapter) |
+
+### Codice esistente rilevante
+
+- `homeassistant/components/knx/monitoring.py` — presenza KNX (prototipo, da refactor Phase 1)
+- `homeassistant/components/knx/telegrams.py` — store telegram bus (non duplicare)
+- `homeassistant/components/lutron_leap_custom/` — LEAP monitor (Phase 4)
 
 ## Documentazione chiave
 
-- `README.rst` — overview del progetto
-- `AGENTS.md` — costituzione operativa del repo
-- `.github/copilot-instructions.md` — istruzioni derivate per Copilot
-- `.agents/memory/` — memoria agenti
-- `.agents/skills/collaborative-project-memory/SKILL.md` — protocollo SYNC/CHECKPOINT/INIT
-- `.agents/sessions/archive/` — checkpoint storici
+| File | Contenuto |
+|------|-----------|
+| `.agents/memory/MONITORING_PLAN.md` | **Piano implementazione monitoring** |
+| `.agents/memory/DECISIONS.md` | ADR-001–004 |
+| `.agents/memory/TODO.md` | Backlog operativo per phase |
+| `AGENTS.md` | Costituzione operativa repo |
+| `.agents/skills/collaborative-project-memory/SKILL.md` | Protocollo SYNC/CHECKPOINT |

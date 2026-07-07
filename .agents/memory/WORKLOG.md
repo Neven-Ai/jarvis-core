@@ -5,6 +5,40 @@
 
 ---
 
+## [2026-07-07] Piano monitoring salvato in memoria condivisa (agente: Claude)
+**Richieste**: aggiornare e salvare il piano completo in `.agents` per handover multi-agente
+**Modifiche**:
+- `.agents/memory/MONITORING_PLAN.md` — piano autorevole: architettura, schema SQLite, API, roadmap 0a–5, regole agenti
+- `.agents/memory/PROJECT_STATE.md` — DB, stack monitoring, link al piano
+- `.agents/memory/TODO.md` — backlog by phase allineato al piano
+- `.agents/memory/DECISIONS.md` — ADR-001–004 (già presenti)
+- `.agents/sessions/SESSION_SUMMARY.md` — checkpoint sessione planning
+- `.agents/README.md`, `.agents/AGENTS.md` — puntatori obbligatori a MONITORING_PLAN
+**Esito**: completato; pronto per Phase 0a da qualsiasi agente
+
+## [2026-07-07] Decisioni piano monitoring confermate (agente: Claude)
+**Richieste**: conferma approccio ibrido; retention 60gg/2anni; soglie globali; build frontend in-repo
+**Modifiche**:
+- ADR-004 in `DECISIONS.md`
+- `TODO.md` — aggiornato backlog Phase 0 con policy retention e frontend
+**Esito**: piano consolidato, pronto per Phase 0a
+
+## [2026-07-07] Piano rivisto: store utilizzo cross-bus + UI in-repo (agente: Claude)
+**Richieste**: SQLite per utilizzo completo (on/off luci/motori, variazioni temp/velocità); architettura replicabile su tutti i bus; chiarire UI custom; tenere frontend nel progetto
+**Modifiche**:
+- ADR-002 e ADR-003 in `DECISIONS.md`
+- `TODO.md` — Phase 0 (store + ingestion) prima di KNX 1a; frontend in-repo
+- chiarito che "separate repository" era solo organizzazione Git, non una seconda UI
+**Esito**: piano aggiornato in attesa di conferma utente
+
+## [2026-07-07] Proposta architettura monitoring KNX (agente: Claude)
+**Richieste**: partire da KNX per sistema monitoring evoluto; UI web custom + pannello HA opzionale; storico, report, allarmi (WhatsApp/Telegram/email)
+**Modifiche**:
+- analisi `knx/monitoring.py`, `knx_module.py`, `telegrams.py`, `websocket.py`
+- ADR-001 in `.agents/memory/DECISIONS.md` — architettura ibrida collector + `jarvis_monitor` + UI
+- `.agents/memory/TODO.md` — backlog Phase 1–4 per monitoring KNX e piattaforma
+**Esito**: proposta architetturale pronta per review; nessuna modifica codice applicativa
+
 ## [2026-07-07] Branch rinominato in `neven/jarvis` (agente: GPT-5.4)
 **Richieste**: rinominare `neven/collaborative-memory-cleanup` in `neven/jarvis`
 **Modifiche**:

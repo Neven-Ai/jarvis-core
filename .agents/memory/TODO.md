@@ -87,6 +87,7 @@ Seguire le fasi in ordine (0a → 0b → 0c → 1 → …). Ogni task ha criteri
 ## Completati
 
 - [x] Piano monitoring consolidato in `MONITORING_PLAN.md` (2026-07-07)
+- [x] Commit `d9aff946766` e push branch `neven/jarvis` (2026-07-07)
 - [x] ADR-001–004 registrati in `DECISIONS.md`
 - [x] Decisioni utente: ibrido, retention 60gg/2anni, soglie globali, frontend in-repo
 - [x] Aggiunta e verificata chiave SSH dedicata per push su `jarvis-core`

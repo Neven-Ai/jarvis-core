@@ -5,6 +5,14 @@
 
 ---
 
+## [2026-07-07] Commit e push piano monitoring (agente: Claude)
+**Richieste**: committare e pushare il piano in memoria condivisa
+**Modifiche**:
+- commit `d9aff946766` — `MONITORING_PLAN.md`, ADR, TODO, PROJECT_STATE, SESSION_SUMMARY, AGENTS.md, copilot-instructions
+- push `neven/jarvis` → `origin/neven/jarvis` via SSH dedicato
+- `script/hassfest/codeowners.py` — lasciato fuori dal commit (hassfest env incompleto); ancora modificato in working tree
+**Esito**: completato
+
 ## [2026-07-07] Piano monitoring salvato in memoria condivisa (agente: Claude)
 **Richieste**: aggiornare e salvare il piano completo in `.agents` per handover multi-agente
 **Modifiche**:

@@ -23,6 +23,10 @@ else
     if [ -f "${my_path}/${venv}/bin/activate" ]; then
       . "${my_path}/${venv}/bin/activate"
       break
+    elif [ -x "${my_path}/${venv}/bin/python3" ]; then
+      export VIRTUAL_ENV="${my_path}/${venv}"
+      export PATH="${my_path}/${venv}/bin:${PATH}"
+      break
     fi
   done
 fi

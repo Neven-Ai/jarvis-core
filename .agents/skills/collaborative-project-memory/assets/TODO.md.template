@@ -1,0 +1,34 @@
+<!-- agents-memory v1 | project: {{PROJECT_NAME}} | updated: {{DATE}} -->
+
+# TODO — {{PROJECT_NAME}}
+
+> **Ultimo aggiornamento**: {{DATE}}
+> **Branch**: `main`
+
+---
+
+## Alta Priorità
+
+- [ ] 
+
+---
+
+## Media Priorità
+
+- [ ] 
+
+---
+
+## Bassa Priorità / Idee Future
+
+- [ ] 
+
+---
+
+## Completati
+
+- [x] 
+
+---
+
+*Sincronizzato con `.agents/sessions/SESSION_SUMMARY.md`*

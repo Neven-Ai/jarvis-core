@@ -1,0 +1,12 @@
+## Comportamento autonomo (OBBLIGATORIO)
+
+**Non attendere che l'utente chieda sync, lettura memoria o aggiornamento WORKLOG.**
+
+| Trigger | Azione automatica |
+|---------|-------------------|
+| **Primo turno** (prima di rispondere) | Leggi `.agents/memory/ACTIVE_WORK.md`, `PROJECT_STATE.md`, `WORKLOG.md` (3 voci), `BUGS.md`, `TODO.md`. Riassumi in 2–3 frasi. |
+| **Dopo ogni operazione completata** | Aggiorna `WORKLOG.md`, `TODO.md`; `BUGS.md` / `DECISIONS.md` se serve; `PROJECT_STATE.md` solo su cambi strutturali; rimuovi claim se finito. **Stesso turno, senza chiedere.** |
+| **Task > ~30 min** | Registra claim in `ACTIVE_WORK.md`. |
+| **Fine sessione** (su richiesta) | CHECKPOINT → `.agents/sessions/SESSION_SUMMARY.md` |
+
+Protocollo: `.agents/skills/collaborative-project-memory/SKILL.md`

@@ -1,0 +1,41 @@
+<!-- agents-memory v1 | project: {{PROJECT_NAME}} | updated: {{DATE}} -->
+
+# PROJECT_STATE — {{PROJECT_NAME}}
+
+> Stato generale del progetto. Aggiornare solo su cambi architetturali, DB, servizi o procedure di avvio.
+
+## Cos'è
+
+[Descrizione in 2–3 frasi]
+
+## Stack e struttura
+
+| Servizio | Tecnologia | Porta | Percorso |
+|----------|-----------|-------|----------|
+| | | | |
+
+## Come si avvia
+
+```bash
+# comandi completi
+```
+
+## Database
+
+[Migrazioni, host, note]
+
+## Test
+
+```bash
+# comandi test
+```
+
+## Git
+
+- Branch principale:
+- Vincolo: mai commit/push senza consenso esplicito
+
+## Documentazione chiave
+
+- `.agents/memory/` — memoria agenti
+- `.agents/sessions/archive/` — checkpoint storici

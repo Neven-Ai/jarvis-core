@@ -1,0 +1,13 @@
+# Istruzioni agente — {{PROJECT_NAME}}
+
+> File auto-caricato da GitHub Copilot in VS Code. Stesse regole di `AGENTS.md`.
+
+## Comportamento autonomo (OBBLIGATORIO)
+
+**Non attendere che l'utente chieda sync o aggiornamenti memoria.**
+
+1. **Primo turno di ogni sessione** — prima di rispondere: leggi `.agents/memory/ACTIVE_WORK.md`, `PROJECT_STATE.md`, `WORKLOG.md` (3 voci), `BUGS.md`, `TODO.md`; riassumi in 2–3 frasi.
+2. **Dopo ogni operazione completata** — nello stesso turno aggiorna `WORKLOG.md`, `TODO.md`, `BUGS.md` se serve; non chiedere conferma.
+3. **Task > 30 min** — registra claim in `ACTIVE_WORK.md`.
+4. **Protocollo completo**: `.agents/skills/collaborative-project-memory/SKILL.md`
+5. **Mai** commit/push senza consenso; **mai** secret in `.agents/memory/`.

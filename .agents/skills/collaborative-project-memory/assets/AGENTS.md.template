@@ -1,0 +1,26 @@
+# Istruzioni per agenti AI — {{PROJECT_NAME}}
+
+Memoria collaborativa in `.agents/` — protocollo: `.agents/skills/collaborative-project-memory/SKILL.md`
+
+## Comportamento autonomo (OBBLIGATORIO)
+
+**Non attendere che l'utente chieda sync, lettura memoria o aggiornamento WORKLOG.**
+
+| Trigger | Azione automatica |
+|---------|-------------------|
+| **Primo turno** (prima di rispondere) | Leggi `.agents/memory/ACTIVE_WORK.md`, `PROJECT_STATE.md`, `WORKLOG.md` (3 voci), `BUGS.md`, `TODO.md`. Riassumi in 2–3 frasi. |
+| **Dopo ogni operazione completata** | Aggiorna `WORKLOG.md`, `TODO.md`; `BUGS.md` / `DECISIONS.md` se serve; `PROJECT_STATE.md` solo su cambi strutturali; rimuovi claim se finito. **Stesso turno, senza chiedere.** |
+| **Task > ~30 min** | Registra claim in `ACTIVE_WORK.md`. |
+| **Fine sessione** (su richiesta) | CHECKPOINT → `.agents/sessions/SESSION_SUMMARY.md` |
+
+Protocollo dettagliato: `.agents/skills/collaborative-project-memory/SKILL.md`
+
+## Regole permanenti
+
+1. **Mai** commit/push git senza consenso esplicito dell'utente.
+2. **Mai** credenziali reali o secret nei file memoria.
+3. Non aggiornare memoria per sole letture o domande informative.
+
+## Contesto rapido
+
+<!-- Compilare dopo init: stack, comandi avvio, test -->

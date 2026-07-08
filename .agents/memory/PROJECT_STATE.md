@@ -1,94 +1,62 @@
-<!-- agents-memory v1 | project: jarvis | updated: 2026-07-07 -->
+<!-- agents-memory v1 | project: jarvis-core | updated: 2026-07-08 | status: ARCHIVED -->
 
-# PROJECT_STATE — jarvis
+# PROJECT_STATE — jarvis-core
 
-> Stato generale del progetto. Aggiornare solo su cambi architetturali, DB, servizi o procedure di avvio.
+> **REPO ARCHIVIATO (2026-07-08)** — Non sviluppare nuove feature qui.
+> Il progetto jarvis prosegue come **custom integration** nel repository dedicato **`jarvis-monitor`** (`/home/neven/dev/jarvis-monitor`).
+> Questo fork di `home-assistant/core` resta in **sola lettura** come riferimento storico fino a completa migrazione, poi da archiviare su GitHub.
 
-## Cos'è
+## Dove lavorare ora
 
-Questo repository contiene `homeassistant`, il core di Home Assistant: fork orientato a **monitoring evoluto multi-bus** (KNX, Lutron, DALI) per impianti domotici. Il codice principale vive in `homeassistant/`, test in `tests/`, script in `script/`, config locale in `config/`.
+| Domanda | Risposta |
+|---------|----------|
+| Repo attivo | `jarvis-monitor` — custom integration HA |
+| Piano implementazione | `/home/neven/dev/jarvis-monitor/.agents/memory/MONITORING_PLAN.md` |
+| Decisioni architetturali | ADR-001–005 in entrambi i repo; **ADR-005** definisce il pivot |
+| Bootstrap migrazione | [`JARVIS_BOOTSTRAP.md`](../../JARVIS_BOOTSTRAP.md) (questo repo) |
+| Memoria agenti attiva | `/home/neven/dev/jarvis-monitor/.agents/` |
 
-**Piano di sviluppo monitoring**: `.agents/memory/MONITORING_PLAN.md` (fonte di verità per implementazione).
+## Cos'era questo repository
 
-## Stack e struttura
+Fork di Home Assistant Core (branch `neven/jarvis`) per prototipare monitoring multi-bus (KNX, Lutron, DALI). Il codice di riferimento utile per la migrazione:
 
-| Servizio | Tecnologia | Porta | Percorso |
-|----------|-----------|-------|----------|
-| Core applicativo | Python 3.14 / Home Assistant Core | variabile | `homeassistant/` |
-| Monitoring (da implementare) | `jarvis_monitor` integration | n/a | `homeassistant/components/jarvis_monitor/` |
-| Frontend monitoring | TypeScript/React (build npm) | servito da HA | `jarvis_monitor/frontend/` → `jarvis_monitor/www/` |
-| Test suite | `pytest` | n/a | `tests/` |
-| Tooling sviluppo | `uv`, `prek`, `pylint`, `ruff` | n/a | `script/`, `.pre-commit-config.yaml` |
-| Config locale | Home Assistant config dir | runtime | `config/` |
+| Sorgente (qui) | Destinazione (`jarvis-monitor`) |
+|----------------|--------------------------------|
+| `homeassistant/components/knx/monitoring.py` | `custom_components/jarvis_monitor/collectors/knx_presence.py` (Phase 1) |
+| `homeassistant/components/lutron_leap_custom/` | `custom_components/lutron_leap_custom/` (già migrato) |
+| `.agents/memory/MONITORING_PLAN.md` | copiato invariato |
+| `.agents/skills/collaborative-project-memory/` | copiato |
 
-## Come si avvia
+## Stack (storico — solo per consultazione)
+
+| Componente | Percorso nel fork |
+|------------|-------------------|
+| HA Core fork | `homeassistant/` |
+| Prototipo KNX presence | `homeassistant/components/knx/monitoring.py` |
+| Lutron LEAP custom | `homeassistant/components/lutron_leap_custom/` |
+| Devcontainer | `.devcontainer/devcontainer.json` + `Dockerfile.dev` |
+| Config HA locale | `config/` |
+
+## Avvio (solo se serve consultare il fork)
 
 ```bash
 script/setup
 uv run python -m homeassistant -c ./config
 ```
 
-Build frontend monitoring (quando implementato):
-
-```bash
-cd homeassistant/components/jarvis_monitor/frontend
-npm install && npm run build
-```
-
-Richiede **Node.js LTS** nel devcontainer (feature `node` in `.devcontainer/devcontainer.json`). Dopo la modifica: **Dev Containers: Rebuild Container**.
-
-## Database
-
-| DB | Percorso | Scopo | Retention |
-|----|----------|-------|-----------|
-| **jarvis_monitor usage** (da implementare) | `config/.storage/jarvis_monitor/usage.db` | Utilizzo impianto, presenza, aggregati | Eventi 60gg; aggregati 2 anni |
-| **KNX telegrams** (esistente) | `config/.storage/knx/telegrams.db` | Traffico bus KNX grezzo | Configurabile in opzioni KNX |
-| **HA Recorder** (standard) | `config/home-assistant_v2.db` | Entity states HA | Configurazione recorder |
-
-Schema dettagliato: `MONITORING_PLAN.md` §5.
-
-## Test
-
-```bash
-uv run pytest
-uv run pytest tests/components/jarvis_monitor   # quando esiste
-uv run pytest tests/components/knx
-uv run prek run --all-files
-```
+Vedi anche [`DEV_ENVIRONMENT.md`](DEV_ENVIRONMENT.md) per il setup devcontainer (obsoleto per nuovo sviluppo).
 
 ## Git
 
-- Branch principale: `dev`
-- Branch sviluppo monitoring: `neven/jarvis`
+- Branch sviluppo storico: `neven/jarvis`
+- **Nessun nuovo sviluppo** su questo repo senza decisione esplicita
 - Vincolo: mai commit/push senza consenso esplicito
 
-## Obiettivo prodotto (monitoring)
-
-Sistema di monitoring evoluto per impianti domotici, appoggiato a Home Assistant:
-
-| Area | Scelta |
-|------|--------|
-| Architettura | 3 livelli: collector → `jarvis_monitor` → UI (ADR-001) |
-| Store dati | SQLite unificato, eventi normalizzati (ADR-002) |
-| Collector | Ibrido: entity bridge default; nativo solo presenza e punti senza entità (ADR-004) |
-| Retention | Eventi grezzi 60 giorni; aggregati giornalieri 2 anni |
-| Soglie numeriche | Globali in config `jarvis_monitor` |
-| UI principale | Web custom in-repo (`frontend/` → `www/`) |
-| UI avanzata | Pannello HA opzionale (`advanced_panel_enabled`) |
-| Alerting | Telegram, email, WhatsApp (adapter) |
-
-### Codice esistente rilevante
-
-- `homeassistant/components/knx/monitoring.py` — presenza KNX (prototipo, da refactor Phase 1)
-- `homeassistant/components/knx/telegrams.py` — store telegram bus (non duplicare)
-- `homeassistant/components/lutron_leap_custom/` — LEAP monitor (Phase 4)
-
-## Documentazione chiave
+## Documentazione chiave (questo repo)
 
 | File | Contenuto |
 |------|-----------|
-| `.agents/memory/MONITORING_PLAN.md` | **Piano implementazione monitoring** |
-| `.agents/memory/DECISIONS.md` | ADR-001–004 |
-| `.agents/memory/TODO.md` | Backlog operativo per phase |
-| `AGENTS.md` | Costituzione operativa repo |
-| `.agents/skills/collaborative-project-memory/SKILL.md` | Protocollo SYNC/CHECKPOINT |
+| [`JARVIS_BOOTSTRAP.md`](../../JARVIS_BOOTSTRAP.md) | Istruzioni migrazione fork → custom integration |
+| `.agents/memory/DECISIONS.md` | ADR-001–005 |
+| `.agents/memory/MONITORING_PLAN.md` | Piano (copia; fonte operativa in `jarvis-monitor`) |
+| `.agents/memory/DEV_ENVIRONMENT.md` | Setup devcontainer fork (storico) |

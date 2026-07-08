@@ -5,6 +5,48 @@
 
 ---
 
+## [2026-07-08] Archiviazione jarvis-core + pivot a jarvis-monitor (agente: Auto)
+**Richieste**: aggiornare memoria jarvis-core per archiviazione; creare chiave SSH per GitHub
+**Modifiche**:
+- `memory/PROJECT_STATE.md` — stato ARCHIVED, puntatore a `jarvis-monitor`
+- `memory/DECISIONS.md` — aggiunto ADR-005
+- `memory/TODO.md` — backlog marcato obsoleto, link a jarvis-monitor
+- `memory/DEV_ENVIRONMENT.md` — banner storico
+- `.agents/README.md`, `.agents/AGENTS.md` — istruzioni archivio
+- Chiave SSH host: `~/.ssh/id_ed25519_jarvis_monitor` (pubblica fornita all'utente per GitHub)
+**Esito**: completato; sviluppo attivo solo in jarvis-monitor
+
+## [2026-07-08] Riassunto ambiente di sviluppo in memoria condivisa (agente: Auto)
+**Richieste**: creare un file MD condivisibile con colleghi e agenti AI che riassuma decisioni e setup devcontainer
+**Modifiche**:
+- `.agents/memory/DEV_ENVIRONMENT.md` — **creato**: decisioni, architettura, guida operativa, verifica 6 luglio, evoluzioni Node/SSH, troubleshooting Git, istruzioni per agenti
+- `.agents/README.md` — puntatore in tabella "Fonti di verità"
+**Esito**: completato; documento autocontenuto per handover dev environment
+
+## [2026-07-08] Richiesta commit/push — già allineato (agente: Auto)
+**Richieste**: commit e push
+**Esito**:
+- working tree pulito; ultimo commit locale `f7b390246af` — *Add Node LTS to the dev container for frontend builds.*
+- dopo `git fetch`, `origin/neven/jarvis` coincide con HEAD (0 ahead / 0 behind)
+- push fallito dal terminale agente: vedi diagnosi sotto
+
+## [2026-07-08] Mount SSH host in devcontainer (agente: Auto)
+**Richieste**: montare `~/.ssh` del host per abilitare push Git dall'agente
+**Modifiche**:
+- `.devcontainer/devcontainer.json` — `mounts` → `${localEnv:HOME}/.ssh` → `/home/vscode/.ssh`
+- `.agents/memory/PROJECT_STATE.md` — nota rebuild + SSH
+**Esito**: completato; serve **Rebuild Container** per applicare
+
+## [2026-07-08] Diagnosi credenziali GitHub nel dev container (agente: Auto)
+**Contesto**: utente segnala che le credenziali dovrebbero esistere sul host
+**Trovato**:
+- `git config credential.helper` → bridge VS Code Dev Containers verso host, ma `REMOTE_CONTAINERS_IPC` non impostato nella shell agente; socket IPC stale (`ECONNREFUSED`)
+- `SSH_AUTH_SOCK` inoltrato da Cursor, ma `ssh-add -l` → *The agent has no identities*
+- `~/.ssh/` nel container contiene solo `known_hosts`; chiave `id_ed25519_github_jarvis_nevendev` creata il 2026-07-07 era nel container precedente (home effimera)
+- `git ls-remote` HTTPS funziona (repo pubblico in lettura); `git push` richiede credenziali scrivibili → fallisce senza TTY/bridge
+- `gh auth status` → non loggato nel container
+**Conclusione**: credenziali probabilmente sul host/IDE, non raggiungibili dalla shell non interattiva dell'agente; push da terminale integrato Cursor o mount chiavi SSH in `devcontainer.json`
+
 ## [2026-07-07] Node LTS aggiunto al devcontainer (agente: Claude)
 **Richieste**: aggiungere Node per build frontend jarvis_monitor e prettier
 **Modifiche**:

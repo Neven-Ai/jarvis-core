@@ -51,3 +51,30 @@
 | Build frontend | **`npm run build`** in `jarvis_monitor/frontend/` → output in `jarvis_monitor/www/` servito da HA |
 
 **Conseguenze**: job notturno di eviction + rollup; una sola sezione config per soglie; documentare `npm run build` nel workflow dev.
+
+## ADR-005 — jarvis_monitor come custom integration, non fork (2026-07-08)
+
+**Contesto**: il progetto era nato come fork di `home-assistant/core` (repo `jarvis-core`, branch `neven/jarvis`). Dopo analisi è stato deciso di riconvertirlo in **custom integration** in un repository dedicato (`jarvis-monitor`).
+
+**Decisione**: tutto il codice jarvis vive in `custom_components/jarvis_monitor/` (+ `custom_components/lutron_leap_custom/`); Home Assistant è una dipendenza pip pinnata (`homeassistant==2026.7.1` al bootstrap). Il fork `jarvis-core` resta in sola lettura come riferimento, poi si archivia.
+
+**Motivazione**:
+
+1. Nulla nel piano richiede modifiche al core: entity bridge (`state_changed`), store SQLite proprio, REST/WS API custom, `StaticPathConfig` + `panel_custom` sono tutti disponibili alle custom integration.
+2. L'accesso al bus KNX per la presenza avviene tramite l'oggetto `xknx` dell'integrazione KNX ufficiale, via `hass.data` — senza patchare `homeassistant/components/knx/`.
+3. Il fork impone rebase mensili su `dev` e accoppia gli aggiornamenti jarvis agli aggiornamenti HA; la custom integration si aggiorna in modo indipendente su HA stock.
+
+**Regola permanente**: se emerge un requisito che sembra richiedere modifiche al core, NON tornare al fork. Documentare in `DECISIONS.md` e valutare una PR upstream a `home-assistant/core`.
+
+**Mappa di traduzione percorsi** (ovunque `MONITORING_PLAN.md` citi percorsi del fork):
+
+| Nel piano (fork) | Nel nuovo repo (`jarvis-monitor`) |
+|------------------|-----------------------------------|
+| `homeassistant/components/jarvis_monitor/` | `custom_components/jarvis_monitor/` |
+| `homeassistant/components/knx/monitoring.py` | `custom_components/jarvis_monitor/collectors/knx_presence.py` |
+| `homeassistant/components/lutron_leap_custom/` | `custom_components/lutron_leap_custom/` |
+| `tests/components/jarvis_monitor/` | `tests/jarvis_monitor/` |
+| `script/setup`, `hass -c config` | `scripts/setup`, `scripts/develop` |
+| Branch `neven/jarvis` | `main` / `feat/<phase>-<slug>` |
+
+**Conseguenze**: `jarvis-core` archiviato; sviluppo attivo solo in `jarvis-monitor`. ADR-003 (frontend in-repo) resta valido con percorso aggiornato: `custom_components/jarvis_monitor/frontend/` → `www/`.
